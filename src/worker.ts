@@ -6,10 +6,9 @@ export default {
 			const response = await fetch('https://github.com/scratchminer/pd-ota/releases/latest/download/update.json');
 			const update = JSON.parse(new TextDecoder('utf-8').decode(await response.arrayBuffer()));
 
-			// skip version check for now
-			// if (searchParams.get("current_version") === update.version) {
-			// return new Response(null, { status: 204 });
-			// }
+			if (searchParams.get("current_version") === update.version) {
+			return new Response(null, { status: 204 });
+			}
 
 			const url = (await fetch(update.url, { redirect: 'manual' })).headers.get('location');
 
