@@ -1,0 +1,12 @@
+name = "playdate-server-emulator"
+main = "src/worker.ts"
+compatibility_date = "2023-08-25"
+usage_model = "unbound"
+env = { }
+
+[route]
+pattern = "*.sydh.date/*"
+zone_name = "sydh.date"
+
+[triggers]
+crons = [ ]
