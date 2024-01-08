@@ -39,7 +39,7 @@ async function fetchFirmwareUpdate(request: Request) {
 				headers: { 'content-type': 'application/json' },
 			});
 		}
-		else if () {
+		else if (updateJSON.version === update.version) {
 			// rev. B
 			const redirectUrl = (await fetch(update.h7d1, { redirect: 'manual' })).headers.get('location');
 			return new Response(JSON.stringify({ ...update, md5: update.h7d1_md5, url: redirectUrl }), {
