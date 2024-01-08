@@ -27,8 +27,10 @@ function rewriteRequest(url: URL, originalRequest: Request) {
 async function fetchFirmwareUpdate(request: Request) {
 	const newReq = rewriteRequest(new URL(request.url), request);
 	const updateResponse = await fetch(newReq);
+	if (updateResponse.status === 204) {
+		return updateResponse;
+	}
 	const updateJSON = await updateResponse.json();
-
 	if (updateJSON?.version) {
 		const githubResponse = await fetch(`https://github.com/scratchminer/pd-ota/releases/download/${updateJSON.version}/update.json`);
 		const update = await githubResponse.json();
