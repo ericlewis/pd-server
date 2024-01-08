@@ -32,13 +32,23 @@ async function fetchFirmwareUpdate(request: Request) {
 	if (updateJSON?.version) {
 		const githubResponse = await fetch(`https://github.com/scratchminer/pd-ota/releases/download/${updateJSON.version}/update.json`);
 		const update = await githubResponse.json();
-		const redirectUrl = (await fetch(update.url, { redirect: 'manual' })).headers.get('location');
-
-		return new Response(JSON.stringify({ ...update, url: redirectUrl }), {
-			headers: { 'content-type': 'application/json' },
-		});
+		if (updateJSON.md5 === update.stock_md5 && updateJSON.version === update.version) {
+			// rev. A
+			const redirectUrl = (await fetch(update.dvt1, { redirect: 'manual' })).headers.get('location');
+			return new Response(JSON.stringify({ ...update, md5: update.dvt1_md5, url: redirectUrl }), {
+				headers: { 'content-type': 'application/json' },
+			});
+		}
+		else if (updateJSON.version === update.version) {
+			// rev. B
+			const redirectUrl = (await fetch(update.h7d1, { redirect: 'manual' })).headers.get('location');
+			return new Response(JSON.stringify({ ...update, md5: update.h7d1_md5, url: redirectUrl }), {
+				headers: { 'content-type': 'application/json' },
+			});
+		}
 	}
 
+	// either we're on the latest version or the GitHub action hasn't patched it yet
 	return new Response(null, { status: 204 });
 }
 
